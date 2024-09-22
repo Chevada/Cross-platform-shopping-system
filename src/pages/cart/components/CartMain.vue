@@ -422,7 +422,6 @@ const { guessRef, onScrolltolower } = useGuessList()
   right: 0;
   bottom: var(--window-bottom);
   z-index: 1;
-
   height: 100rpx;
   padding: 0 20rpx;
   display: flex;

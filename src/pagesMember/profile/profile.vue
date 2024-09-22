@@ -23,6 +23,7 @@ const getMemberProfileData = async () => {
 // 修改头像
 const onAvatarChange = () => {
   // 调用拍照/选择图片的api
+  // #ifdef MP-WEIXIN
   uni.chooseMedia({
     // 图片张数
     count: 1,
@@ -31,24 +32,40 @@ const onAvatarChange = () => {
     success: (result) => {
       // 文件的本地路径
       const { tempFilePath } = result.tempFiles[0]
-      // 文件上传，直接使用wx的uploadFile接口，在这里我们使用uni.uploadFile方法，同时我们在请求拦截器中也对上传文件的方法进行了拦截
-      uni.uploadFile({
-        url: '/member/profile/avatar',
-        name: 'file',
-        filePath: tempFilePath,
-        success: (success) => {
-          if (success.statusCode === 200) {
-            const avatar = JSON.parse(success.data).result.avatar
-            // 更新当前个人信息页
-            profile.value!.avatar = avatar
-            uni.showToast({ icon: 'success', title: '更新头像成功' })
-            // 仓库进行更新
-            memberStore.profile!.avatar = avatar
-          } else {
-            uni.showToast({ icon: 'error', title: '出现错误啦' })
-          }
-        },
-      })
+      uploadFile(tempFilePath)
+    },
+  })
+  // #endif
+
+  // #ifdef H5 || APP-PLUS
+  uni.chooseImage({
+    count:1,
+    success:(res)=>{
+      const tempFilePath = res.tempFilePaths[0]
+      uploadFile(tempFilePath)
+    }
+  })
+  // #endif
+}
+
+// 文件上传的方法
+const uploadFile = (tempFilePath:string)=>{
+  // 文件上传，直接使用wx的uploadFile接口，在这里我们使用uni.uploadFile方法，同时我们在请求拦截器中也对上传文件的方法进行了拦截
+  uni.uploadFile({
+    url: '/member/profile/avatar',
+    name: 'file',
+    filePath: tempFilePath,
+    success: (success) => {
+      if (success.statusCode === 200) {
+        const avatar = JSON.parse(success.data).result.avatar
+        // 更新当前个人信息页
+        profile.value!.avatar = avatar
+        uni.showToast({ icon: 'success', title: '更新头像成功' })
+        // 仓库进行更新
+        memberStore.profile!.avatar = avatar
+      } else {
+        uni.showToast({ icon: 'error', title: '出现错误啦' })
+      }
     },
   })
 }

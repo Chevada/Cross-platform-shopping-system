@@ -139,7 +139,15 @@
   </view>
 </template>
 
-<style>
+<style lang="scss">
+// H5端默认开启scoped，导致基础样式无效
+/* #ifdef H5 || APP-PLUS */
+@import '@/components/styles/XtxSwiper.scss';
+@import '@/pages/index/components/styles/CategoryPanel.scss';
+@import '@/pages/index/components/styles/HotPanel.scss';
+@import '@/components/styles/XtxGuess.scss';
+/* #endif */
+
 .sk-transparent {
   color: transparent !important;
 }
